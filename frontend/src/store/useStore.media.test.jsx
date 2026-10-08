@@ -72,7 +72,11 @@ describe('owed photos and videos', () => {
 
   it('going ahead anyway keeps the copy in the stash, and its files survive the sign-out', async () => {
     await signedInWithPendingPhoto()
-    await media.put('c'.repeat(64), new Blob(['x']), { mime: 'image/png', pending: false })   // nobody's
+    // This unreferenced file predates sign-out. A put in the same millisecond as
+    // sign-out is deliberately retained to protect concurrent editor writes.
+    const clock = vi.spyOn(Date, 'now').mockReturnValue(Date.now() - 1000)
+    try { await media.put('c'.repeat(64), new Blob(['x']), { mime: 'image/png', pending: false }) }
+    finally { clock.mockRestore() }
     const r = await useStore.getState().signOut({ force: true })
     expect(r).toMatchObject({ owed: true, media: 1, stashed: true })
     expect(useStore.getState().S.customEx).toEqual([])
