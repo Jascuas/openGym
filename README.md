@@ -1,3 +1,13 @@
+# OpenGym Personal
+
+Personal Android source fork of [DuarteSantos8/openGym](https://github.com/DuarteSantos8/openGym),
+based on v1.3.9. [Download the signed Personal APK](https://github.com/Jascuas/openGym/releases)
+or read [the build and migration guide](docs/PERSONAL_ANDROID.md).
+It installs alongside the official app; Tensor server deployment is managed separately.
+
+The original upstream documentation follows. Its official APK links point to the
+upstream app; use the Personal Releases link above for this fork.
+
 <div align="center">
 
 <img src="assets/banner.png" alt="openGym" width="720">

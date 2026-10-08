@@ -1,0 +1,12 @@
+{
+  "applicationId": "io.github.jascuas.opengym",
+  "appName": "OpenGym Personal",
+  "upstreamVersion": "1.3.9",
+  "upstreamSource": "e6c920eb0a657e57139798f60da40c934aec9301",
+  "releaseVersion": "1.3.9-personal.1",
+  "versionName": "1.3.9+personal.1",
+  "versionCode": 10001,
+  "buildSuffix": "personal.1",
+  "repository": "Jascuas/openGym",
+  "certificateSha256": "0f4bb65a8e4ee094bb0172cfd80805436536d160fb5f88ae9b863e7a6fbe761f"
+}

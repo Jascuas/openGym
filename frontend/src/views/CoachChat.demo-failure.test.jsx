@@ -62,8 +62,12 @@ async function click(el) {
   expect(el).toBeTruthy()
   await act(async () => { el.dispatchEvent(new dom.Event('click', { bubbles: true })); await flush() })
 }
-// Microtasks only: the dynamic import of coach-demo.js and the status refresh both settle here.
-const flush = async () => { for (let i = 0; i < 20; i++) await Promise.resolve() }
+// A first dynamic import can wait for module loading beyond the microtask queue.
+// Wait for that boundary explicitly before asserting that the request settled.
+const flush = async () => {
+  await vi.dynamicImportSettled()
+  for (let i = 0; i < 20; i++) await Promise.resolve()
+}
 const settle = async () => { await act(async () => { await flush() }) }
 const elapse = async ms => { await act(async () => { await vi.advanceTimersByTimeAsync(ms); await flush() }) }
 

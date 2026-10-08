@@ -21,3 +21,12 @@ node_modules
 junit.xml
 coverage/
 frontend/bundle-size.json
+
+# Personal Android build output and signing material
+.android-sdk/
+.gradle-build/
+release-output/
+*.jks
+*.keystore
+*.p12
+__pycache__/

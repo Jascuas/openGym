@@ -6,6 +6,7 @@
 // and handed to the system installer via a content:// URI.
 
 import { MOBILE } from './mobile.js'
+import { PERSONAL_ANDROID } from './personal-android.js'
 
 const GITLAB_PROJECT_ID = 'DuarteSantos8%2Fopengym'
 const RELEASES_URL = `https://gitlab.com/api/v4/projects/${GITLAB_PROJECT_ID}/releases`
@@ -45,6 +46,8 @@ function compareSemver(a, b) {
 let cached = null
 export function resetUpdateCheck() { cached = null }
 export async function checkForUpdate() {
+  // This separately signed app uses manual GitHub releases until phone updates are proven.
+  if (PERSONAL_ANDROID) return { hasUpdate: false, latestVersion: __APP_VERSION__, apkUrl: null, hashUrl: null }
   if (!cached) cached = fetchLatest().catch(e => { cached = null; throw e })
   return cached
 }
@@ -91,6 +94,7 @@ export async function sha256(buffer) {
  * @param {function|null} onProgress - Called with (received, total) bytes during download, or null
  */
 export async function downloadAndInstall(url, expectedHash = null, onProgress = null) {
+  if (PERSONAL_ANDROID) throw new Error('Download OpenGym Personal from its GitHub Releases page.')
   if (!MOBILE) {
     // On web, just open the release page
     window.open('https://gitlab.com/DuarteSantos8/opengym/-/releases', '_blank', 'noopener')

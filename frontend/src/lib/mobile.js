@@ -13,6 +13,8 @@ import { t } from './i18n-core.js'
 import { isoOf, todayISO } from './format.js'
 import { effectiveRoutineIds } from './history.js'
 
+import { PERSONAL_ANDROID } from './personal-android.js'
+
 export const MOBILE = import.meta.env.VITE_MOBILE === '1'
 
 // Some features only make sense on Android. The in-app updater downloads an .apk and hands it
@@ -223,7 +225,7 @@ export async function printHtml(html, name) {
 // The root is never pruned: a manual export saved there carries the same name, and nothing
 // tells it apart from an old automatic copy, so those stay for the person to clear (Import
 // backup still reads either kind).
-export const AUTO_BACKUP_DIR = 'openGym'
+export const AUTO_BACKUP_DIR = PERSONAL_ANDROID ? 'OpenGymPersonal' : 'openGym'
 export const AUTO_BACKUP_KEEP = 14
 // Only the exact names writeAutoBackup gives its files are ever pruned; anything else someone
 // keeps in the folder is theirs.

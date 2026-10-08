@@ -16,6 +16,7 @@ import { t, LANGS, INSTR_LANGS, EXERCISE_NAME_LANGS, baseLang } from '../lib/i18
 import { effectiveLang } from '../lib/default-lang.js'
 import { DEMO, REPO } from '../lib/demo.js'
 import { MOBILE, isAndroid, shareExport, shareExportBlob, syncReminder } from '../lib/mobile.js'
+import { PERSONAL_ANDROID } from '../lib/personal-android.js'
 import { referencedFiles } from '../lib/media-refs.js'
 import { mediaStore } from '../lib/media-store.js'
 import { syncMedia, fetchToStore } from '../lib/media-sync.js'
@@ -78,7 +79,7 @@ export default function Settings() {
     // On iOS and the web this check is skipped and the update row never appears. isAndroid()
     // already answers false off the mobile build; the MOBILE check on top keeps the web bundle
     // from even asking (and from calling gitlab.com on every Settings visit).
-    if (!MOBILE) return
+    if (!MOBILE || PERSONAL_ANDROID) return
     isAndroid().then(ok => { setAndroid(ok); if (ok) checkForUpdate().then(setUpdateInfo).catch(() => {}) })
   }, [])
 
@@ -557,7 +558,7 @@ export default function Settings() {
       {/* 14 is AUTO_BACKUP_KEEP in lib/mobile.js, written out because the Settings tests mock
           that module wholesale; mobile.autobackup.test.js pins the two together. */}
       {MOBILE && <Row icon="history" iconTint="var(--blue)" title={t('Auto-backup on changes')}
-        subtitle={t('Saves a dated copy to Documents/openGym after finishing a workout or editing a routine, and keeps the newest {0} — point a sync app at that folder, or copy it out by hand.', 14)}>
+        subtitle={PERSONAL_ANDROID ? 'Saves a dated copy to Documents/OpenGymPersonal after finishing a workout or editing a routine, and keeps the newest 14.' : t('Saves a dated copy to Documents/openGym after finishing a workout or editing a routine, and keeps the newest {0} — point a sync app at that folder, or copy it out by hand.', 14)}>
         <Switch checked={!!S.autoBackup} onChange={v => update(s => { s.autoBackup = v })} />
       </Row>}
       <Row icon="trash" iconTint="var(--red)" title={t('Reset everything')} danger onClick={resetEverything} />
@@ -578,7 +579,7 @@ export default function Settings() {
         On Android the row is always there — it checks on demand and installs when a release is
         newer (checksum verified, see onUpdateRowClick). On the web the app updates with its
         server, so the row points at the APK for the phone instead. iOS has no APK: nothing. */}
-    {(!MOBILE || android) && <Section title={t('Updates')}
+    {!PERSONAL_ANDROID && (!MOBILE || android) && <Section title={t('Updates')}
       footer={MOBILE ? t('Releases are checked on gitlab.com. The download is verified against its checksum before the installer opens.') : t('The web app updates together with your server. The Android app installs its own updates from here.')}>
       {MOBILE
         ? <Row icon="download" iconTint="var(--acc)"
@@ -591,13 +592,18 @@ export default function Settings() {
             onClick={() => window.open('https://opengym.duarte-santos.ch/#download', '_blank', 'noopener')} />}
     </Section>}
 
+    {PERSONAL_ANDROID && <Section title="OpenGym Personal releases"
+      footer="Download and install updates from our GitHub Releases page. Keep your existing app installed while verifying the first migration.">
+      <a href="https://github.com/Jascuas/openGym/releases" target="_blank" rel="noopener noreferrer">Download OpenGym Personal</a>
+    </Section>}
+
     {/* The version, at the bottom of Settings — which is where the support template has been
         telling people to look for it, and where it was not. On the phone build there is no
         address bar and no about box, so without this there is no way to tell which build you
         are running, or whether an update actually installed. */}
     <div className="dim small" style={{ textAlign: 'center', marginTop: 4, lineHeight: 1.6 }}>
       openGym v{__APP_VERSION__} · {t('free & open source (AGPL v3)')}<br />
-      <a href="https://github.com/DuarteSantos8/openGym" target="_blank" rel="noopener">source code</a> · exercise data: hasaneyldrm/exercises-dataset (MIT)<br />
+      <a href={PERSONAL_ANDROID ? "https://github.com/Jascuas/openGym" : "https://github.com/DuarteSantos8/openGym"} target="_blank" rel="noopener">source code</a> · exercise data: hasaneyldrm/exercises-dataset (MIT)<br />
       exercise images and animations © <a href="https://gymvisual.com/" target="_blank" rel="noopener">Gym visual</a>
     </div>
   </div>

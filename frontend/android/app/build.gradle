@@ -1,14 +1,16 @@
 apply plugin: 'com.android.application'
 
+def personalRelease = new groovy.json.JsonSlurper().parse(new File(rootDir, '../../android-release.json'))
+
 android {
     namespace "ch.duartesantos.opengym"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "ch.duartesantos.opengym"
+        applicationId personalRelease.applicationId
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 23
-        versionName "1.3.9"
+        versionCode personalRelease.versionCode
+        versionName personalRelease.versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
